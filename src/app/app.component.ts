@@ -6,7 +6,7 @@ const SEA_LAND_RATIO = 40;
 enum AreaStatus {
   Sea = 0,
   Land = 1,
-  Discovered = 2,
+  Discovered = 2
 }
 
 const SEA_COLOR = '#cbe1ff';
@@ -49,6 +49,15 @@ export class AppComponent implements OnInit {
 
   public onColorChanged(event: Event) {
     // Write your code below.
+    this.newColor = this.inputEl.nativeElement.value;
+    for (let col = 0; col < SIZE; col++) {
+      for (let row = 0; row < SIZE; row++) {
+        if (this.getIslandColor(row, col) !== SEA_COLOR) {
+          this.setIslandColor(row, col, this.newColor);
+        }
+      }
+    }
+    this.render();
   }
 
   private getInitialColor(value: number): string {
@@ -143,5 +152,56 @@ export class AppComponent implements OnInit {
    */
   private findIslands() {
     // Write your code below.
+    for (let col = 0; col < SIZE; col++) {
+      for (let row = 0; row < SIZE; row++) {
+        if (this.island[row * SIZE + col] === AreaStatus.Land) {
+          this.island[row * SIZE + col] = AreaStatus.Discovered;
+          this.checkConnections(row, col);
+          this.numberOfIslands++;
+        }
+      }
+    }
   }
+
+  private checkConnections(row, col) {
+    // console.log(row * SIZE + col);
+
+    if (this.island[row * SIZE + (col + 1)] === AreaStatus.Land) {
+      this.island[row * SIZE + (col + 1)] = AreaStatus.Discovered;
+      this.checkConnections(row, col + 1);
+    }
+    if (this.island[row * SIZE + (col - 1)] === AreaStatus.Land) {
+      this.island[row * SIZE + (col - 1)] = AreaStatus.Discovered;
+      this.checkConnections(row, col - 1);
+    }
+
+    if (this.island[(row + 1) * SIZE + col] === AreaStatus.Land) {
+      this.island[(row + 1) * SIZE + col] = AreaStatus.Discovered;
+      this.checkConnections(row + 1, col);
+    }
+    if (this.island[(row + 1) * SIZE + (col + 1)] === AreaStatus.Land) {
+      this.island[(row + 1) * SIZE + (col + 1)] = AreaStatus.Discovered;
+      this.checkConnections(row + 1, col + 1);
+    }
+    if (this.island[(row + 1) * SIZE + (col - 1)] === AreaStatus.Land) {
+      this.island[(row + 1) * SIZE + (col - 1)] = AreaStatus.Discovered;
+      this.checkConnections(row + 1, col - 1);
+    }
+
+    if (this.island[(row - 1) * SIZE + col] === AreaStatus.Land) {
+      this.island[(row - 1) * SIZE + col] = AreaStatus.Discovered;
+      this.checkConnections(row - 1, col);
+    }
+    if (this.island[(row - 1) * SIZE + (col + 1)] === AreaStatus.Land) {
+      this.island[(row - 1) * SIZE + (col + 1)] = AreaStatus.Discovered;
+      this.checkConnections(row - 1, col + 1);
+    }
+    if (this.island[(row - 1) * SIZE + (col - 1)] === AreaStatus.Land) {
+      this.island[(row - 1) * SIZE + (col - 1)] = AreaStatus.Discovered;
+      this.checkConnections(row - 1, col - 1);
+    }
+
+  
+  }
+
 }
